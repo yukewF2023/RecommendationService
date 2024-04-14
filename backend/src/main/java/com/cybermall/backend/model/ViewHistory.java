@@ -1,10 +1,6 @@
 package com.cybermall.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "view_history")
@@ -14,39 +10,45 @@ public class ViewHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private Long userId;
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    public ViewHistory() {
-        // default constructor
+    private Integer numberOfViews;
+
+    public ViewHistory() {}
+
+    public ViewHistory(User user, Product product) {
+        this.user = user;
+        this.product = product;
+        this.numberOfViews = 1; // Initialize with 1 view
     }
 
-    public ViewHistory(Long userId, Long productId) {
-        this.userId = userId;
-        this.productId = productId;
+    public User getUser() {
+        return user;
     }
 
-    public Long getId() {
-        return id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Product getProduct() {
+        return this.product;
     }
 
-    public Long getUserId() {
-        return userId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public Integer getNumberOfViews() {
+        return numberOfViews;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setNumberOfViews(Integer numberOfViews) {
+        this.numberOfViews = numberOfViews;
     }
 }

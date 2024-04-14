@@ -31,12 +31,12 @@ public class BackendApplication {
     CommandLineRunner commandLineRunner(ViewHistoryRepository viewHistoryRepository) {
         return args -> {
             // Inserting a couple of view histories
-            ViewHistory viewHistory1 = new ViewHistory(1L, 101L);
-            ViewHistory viewHistory2 = new ViewHistory(1L, 102L);
+            // ViewHistory viewHistory1 = new ViewHistory(1L, 101L);
+            // ViewHistory viewHistory2 = new ViewHistory(1L, 102L);
             
-            // Save these to the database
-            viewHistoryRepository.save(viewHistory1);
-            viewHistoryRepository.save(viewHistory2);
+            // // Save these to the database
+            // viewHistoryRepository.save(viewHistory1);
+            // viewHistoryRepository.save(viewHistory2);
         };
     }
 }

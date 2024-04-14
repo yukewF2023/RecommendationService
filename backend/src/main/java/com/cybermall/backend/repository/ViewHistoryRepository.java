@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ViewHistoryRepository extends JpaRepository<ViewHistory, Long> {
-    
-    // Example custom query to find view history by user ID
+
     List<ViewHistory> findByUserId(Long userId);
+    List<ViewHistory> findByProductId(Long productId);
 }
