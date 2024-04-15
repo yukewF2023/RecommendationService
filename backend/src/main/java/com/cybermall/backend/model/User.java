@@ -23,7 +23,6 @@ public class User {
     public User() {}
 
     public User(String username) {
-        // assign id to the current timestamp
         this.username = username;
         this.isNewUser = true;
         this.viewHistories = new HashSet<>();

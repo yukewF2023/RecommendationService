@@ -8,31 +8,42 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // this is for JPA
-    private Long userId;
-    private Long productId;
+    private Long id;
 
-    // default constructor for JPA
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    // Default constructor for JPA
     public Order() {}
 
-    public Order(Long userId, Long productId) {
-        this.userId = userId;
-        this.productId = productId;
+    // Constructor using entities
+    public Order(User user, Product product) {
+        this.user = user;
+        this.product = product;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getOrderId() {
+        return this.id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public User getUser() {
+        return this.user;
     }
 
-    public Long getProductId() {
-        return productId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return this.product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

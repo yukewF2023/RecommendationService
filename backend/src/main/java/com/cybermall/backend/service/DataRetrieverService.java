@@ -1,37 +1,40 @@
 package com.cybermall.backend.service;
 
-import com.cybermall.backend.model.Product;
-import com.cybermall.backend.model.User;
-import com.cybermall.backend.model.ViewHistory;
-import com.cybermall.backend.repository.ProductRepository;
-import com.cybermall.backend.repository.UserRepository;
-import com.cybermall.backend.repository.ViewHistoryRepository;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import com.cybermall.backend.model.Order;
+import com.cybermall.backend.model.Product;
+import com.cybermall.backend.model.RecommendationData;
+import com.cybermall.backend.model.User;
+import com.cybermall.backend.model.ViewHistory;
 
 @Service
 public class DataRetrieverService {
 
-    private final UserRepository userRepository;
-    private final ProductRepository productRepository;
-    private final ViewHistoryRepository viewHistoryRepository;
+    private final UserService userService;
+    private final ProductService productService;
+    private final ViewHistoryService viewHistoryService;
+    private final MockDataService mockDataService;
 
-    public DataRetrieverService(UserRepository userRepository, ProductRepository productRepository, ViewHistoryRepository viewHistoryRepository) {
-        this.userRepository = userRepository;
-        this.productRepository = productRepository;
-        this.viewHistoryRepository = viewHistoryRepository;
+    public DataRetrieverService(UserService userService, ProductService productService, ViewHistoryService viewHistoryService, MockDataService mockDataService) {
+        this.userService = userService;
+        this.productService = productService;
+        this.viewHistoryService = viewHistoryService;
+        this.mockDataService = mockDataService;
     }
 
-    public Set<ViewHistory> getUserViewHistory(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        return user.getViewHistories();
-    }
+    public RecommendationData retrieveDataForRecommendation(User user) {
+        // Create an instance of RecommendationData
+        RecommendationData data = new RecommendationData(user);
+        
+        // Add mock data from MockDataService for testing
+        data.setUser(mockDataService.getFakeUsers().stream().filter(u -> u.getUserId().equals(user.getUserId())).findFirst().orElse(null));
+        data.setProducts(mockDataService.getFakeProducts());
+        data.setViewHistory(mockDataService.getFakeViewHistories());
+        data.setOrders(mockDataService.getFakeOrders());
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return data;
     }
-
-    // Other methods to interact with OrderRepository if needed.
 }

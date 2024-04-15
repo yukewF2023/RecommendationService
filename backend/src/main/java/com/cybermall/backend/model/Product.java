@@ -19,13 +19,13 @@ public class Product {
     // default constructor for JPA
     public Product() {}
 
-    public Product(String name, String description, double price, String imageUrl, String category, Integer numberOfViews) {
+    public Product(String name, String description, double price, String imageUrl, String category) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.imageUrl = imageUrl;
         this.category = category;
-        this.numberOfViews = 0;
+        this.numberOfViews = 1;
     }
 
     public Long getProductId() {

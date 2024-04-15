@@ -10,11 +10,11 @@ public class ViewHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // a user can have multiple view histories
     @JoinColumn(name = "user_id")
     private User user;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // a product can have multiple view histories
     @JoinColumn(name = "product_id")
     private Product product;
 
