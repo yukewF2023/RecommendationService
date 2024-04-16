@@ -31,14 +31,14 @@ public class RecommendationServiceController {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
         
         // Assuming retrieveDataForRecommendation only needs a User object and retrieves the rest
-        RecommendationData data = dataRetrieverService.retrieveDataForRecommendation(user);
+        RecommendationData data = dataRetrieverService.retrieveDataForRecommendation(user.getUserId());
 
         boolean isNewUser = user.getIsNewUser();
         System.out.println(isNewUser ? "User is new" : "User is not new");
         System.out.println("Retrieved data for user: " + data.getUser().getUserName());
         List<Product> recommendations = isNewUser ?
             this.recommendationService.recommendUsingSimpleStrategy() :
-            this.recommendationService.recommendUsingMLStrategy();
+            this.recommendationService.recommendUsingMLStrategy(user);
 
         return recommendations;
     }

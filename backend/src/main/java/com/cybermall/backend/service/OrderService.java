@@ -1,5 +1,7 @@
 package com.cybermall.backend.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.cybermall.backend.model.Order;
@@ -23,15 +25,18 @@ public class OrderService {
     }
 
     @Transactional
-    public void recordOrder(Long userId, Long productId) {
+    public Order recordOrder(Long userId, Long productId) {
         User user = userRepository.findById(userId).orElseThrow(
             () -> new RuntimeException("User not found."));
         Product product = productRepository.findById(productId).orElseThrow(
             () -> new RuntimeException("Product not found."));
 
         Order order = new Order(user, product);
-        orderRepository.save(order);
+        this.orderRepository.save(order);
+        return order;
     }
 
-    // Other methods...
+    public List<Order> getOrdersByUser(User user) {
+        return this.orderRepository.findByUserId(user.getUserId());
+    }
 }

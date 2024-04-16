@@ -43,6 +43,10 @@ public class ViewHistoryService {
 
         // Increment the view count and save
         history.setNumberOfViews(history.getNumberOfViews() + 1);
-        viewHistoryRepository.save(history);
+        this.viewHistoryRepository.save(history);
+    }
+
+    public List<ViewHistory> getViewHistoryByUser(User user) {
+        return this.viewHistoryRepository.findByUserId(user.getUserId());
     }
 }

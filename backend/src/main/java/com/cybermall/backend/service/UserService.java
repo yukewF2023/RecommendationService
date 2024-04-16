@@ -3,6 +3,9 @@ package com.cybermall.backend.service;
 import com.cybermall.backend.model.User;
 import com.cybermall.backend.repository.UserRepository;
 import com.cybermall.backend.repository.ViewHistoryRepository;
+
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +28,11 @@ public class UserService {
         int viewCount = viewHistoryRepository.findByUserId(userId).size();
         user.setIsNewUser(viewCount <= 10); // User is not new if they have viewed more than 10 products
 
-        userRepository.save(user);
+        this.userRepository.save(user);
+    }
+
+    public Optional<User> findById(Long userId) {
+        return this.userRepository.findById(userId);
     }
 
 }

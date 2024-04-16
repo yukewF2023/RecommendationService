@@ -41,6 +41,7 @@ public class BackendApplication {
         return args -> {
             // Create mock users
             User user = userRepository.save(new User("yuketest"));
+            System.out.println("Created user with ID: " + user.getUserId());
 
             // Create mock products
             Product product1 = productRepository.save(new Product("Apple", "Description 1", 10.0, "url1", "fruit"));
