@@ -1,7 +1,6 @@
 package com.cybermall.backend.service;
 
-import com.cybermall.backend.model.Product;
-import com.cybermall.backend.model.User;
+import com.cybermall.backend.model.*;
 import com.cybermall.backend.repository.ProductRepository;
 
 import org.springframework.stereotype.Service;
@@ -19,25 +18,25 @@ public class RecommendationService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> recommendProducts() {
+    public List<Product> recommendUsingSimpleStrategy() {
         // Use real strategy: return products sorted by number of views using actual data
+        System.out.println("Using simple strategy to recommend products based on popularity");
         return productRepository.findAll().stream()
                 .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
                 .collect(Collectors.toList());
     }
 
-    // Additional recommendation strategies go here...
-    public List<Product> recommendUsingSimpleStrategy() {
-        // Implement the logic using real data
-        // For now, it's the same as the recommendProducts method, but you can customize it later
-        System.out.println("Using simple strategy to recommend products");
-        return recommendProducts();
+    public List<Product> recommendUsingContentBasedStrategy(User user) {
+        // Placeholder - replace this with actual content-based logic
+        System.out.println("Using content-based strategy to recommend products");
+        // Potentially filter by categories or attributes that the user has shown interest in
+        return productRepository.findAll();
     }
 
-    public List<Product> recommendUsingMLStrategy(User user) {
-        // Placeholder for ML strategy - you will replace this with actual call to ML model
-        // For now, just return all products as a placeholder
-        System.out.println("Using ML strategy to recommend products");
+    public List<Product> recommendUsingCollaborativeFilteringStrategy(User user) {
+        // Placeholder - replace this with actual collaborative filtering logic
+        System.out.println("Using collaborative filtering strategy to recommend products");
+        // Implement a system that looks at user similarities and item similarities
         return productRepository.findAll();
     }
 }

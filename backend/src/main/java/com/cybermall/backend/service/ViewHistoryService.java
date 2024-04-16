@@ -1,11 +1,7 @@
 package com.cybermall.backend.service;
 
-import com.cybermall.backend.model.Product;
-import com.cybermall.backend.model.User;
-import com.cybermall.backend.model.ViewHistory;
-import com.cybermall.backend.repository.ProductRepository;
-import com.cybermall.backend.repository.UserRepository;
-import com.cybermall.backend.repository.ViewHistoryRepository;
+import com.cybermall.backend.model.*;
+import com.cybermall.backend.repository.*;
 
 import java.util.List;
 
@@ -27,26 +23,34 @@ public class ViewHistoryService {
 
     @Transactional
     public void recordView(Long userId, Long productId) {
-        // Fetch the existing User and Product from the database
-        User user = userRepository.findById(userId).orElseThrow(
-            () -> new RuntimeException("User not found."));
-        Product product = productRepository.findById(productId).orElseThrow(
-            () -> new RuntimeException("Product not found."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found."));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found."));
 
-        // Check for an existing view history or create a new one
+        // Increment the product's view count
+        product.setNumberOfViews(product.getNumberOfViews() + 1);
+        productRepository.save(product);
+
+        // Update the view history
         ViewHistory history = viewHistoryRepository.findByUserIdAndProductId(userId, productId)
-            .orElseGet(() -> {
-                ViewHistory newHistory = new ViewHistory(user, product);
-                newHistory.setNumberOfViews(0); // Start the count at 0
-                return newHistory;
-            });
+            .orElseGet(() -> new ViewHistory(user, product));  // Start count at 0 for a new view history record
 
-        // Increment the view count and save
         history.setNumberOfViews(history.getNumberOfViews() + 1);
-        this.viewHistoryRepository.save(history);
+        viewHistoryRepository.save(history);
+
+        // Determine if the user is still new or ready for content-based filtering
+        updateIsNewUser(userId);
+    }
+
+    private void updateIsNewUser(Long userId) {
+        int uniqueProductsViewed = viewHistoryRepository.findByUserId(userId).size();
+        if (uniqueProductsViewed >= 10) {
+            User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found."));
+            user.setIsNewUser(false);  // Assuming `isNewUser` now means eligible for more personalized recommendations
+            userRepository.save(user);
+        }
     }
 
     public List<ViewHistory> getViewHistoryByUser(User user) {
-        return this.viewHistoryRepository.findByUserId(user.getUserId());
+        return viewHistoryRepository.findByUserId(user.getUserId());
     }
 }

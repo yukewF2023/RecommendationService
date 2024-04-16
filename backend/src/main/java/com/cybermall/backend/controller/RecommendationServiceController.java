@@ -2,14 +2,11 @@ package com.cybermall.backend.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.cybermall.backend.model.*;
-import com.cybermall.backend.service.DataRetrieverService;
-import com.cybermall.backend.service.RecommendationService;
+import com.cybermall.backend.service.*;
 import com.cybermall.backend.repository.*;
 
 @RestController
@@ -19,27 +16,47 @@ public class RecommendationServiceController {
     private final DataRetrieverService dataRetrieverService;
     private final RecommendationService recommendationService;
     private final UserRepository userRepository;
+    private final ViewHistoryService viewHistoryService;
+    private final ProductRepository productRepository;
 
-    public RecommendationServiceController(DataRetrieverService dataRetrieverService, RecommendationService recommendationService, UserRepository userRepository) {
+    public RecommendationServiceController(DataRetrieverService dataRetrieverService,
+                                           RecommendationService recommendationService,
+                                           UserRepository userRepository,
+                                           ViewHistoryService viewHistoryService,
+                                           ProductRepository productRepository) {
         this.dataRetrieverService = dataRetrieverService;
         this.recommendationService = recommendationService;
         this.userRepository = userRepository;
+        this.viewHistoryService = viewHistoryService;
+        this.productRepository = productRepository;
     }
 
-    @GetMapping("/{userId}")
-    public List<Product> getRecommendations(@PathVariable Long userId) {
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
-        
-        // Assuming retrieveDataForRecommendation only needs a User object and retrieves the rest
-        RecommendationData data = dataRetrieverService.retrieveDataForRecommendation(user.getUserId());
+    /**
+     * Returns a list of recommended products based on the given user's preferences and behavior.
+     *
+     * @param userId the ID of the user for whom to retrieve recommendations
+     * @return a list of recommended products, or an error response if the user could not be found
+     */
+    @GetMapping("/")
+    public ResponseEntity<List<Product>> getRecommendations(@RequestParam Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found!"));
+        int totalProducts = productRepository.findAll().size();
+        int totalUniqueProductsViewedByCurrentUser = viewHistoryService.getViewHistoryByUser(user).size();
 
-        boolean isNewUser = user.getIsNewUser();
-        System.out.println(isNewUser ? "User is new" : "User is not new");
-        System.out.println("Retrieved data for user: " + data.getUser().getUserName());
-        List<Product> recommendations = isNewUser ?
-            this.recommendationService.recommendUsingSimpleStrategy() :
-            this.recommendationService.recommendUsingMLStrategy(user);
+        List<Product> recommendations;
 
-        return recommendations;
+        // Adjust thresholds based on catalog size
+        int basicThreshold = Math.min(10, totalProducts / 10); // Ensure threshold doesn't exceed 10% of catalog
+        int advancedThreshold = Math.min(30, totalProducts / 4); // Ensure threshold doesn't exceed 25% of catalog
+
+        if (totalProducts <= 10 || totalUniqueProductsViewedByCurrentUser < basicThreshold) {
+            recommendations = recommendationService.recommendUsingSimpleStrategy();
+        } else if (totalUniqueProductsViewedByCurrentUser >= basicThreshold && totalUniqueProductsViewedByCurrentUser < advancedThreshold) {
+            recommendations = recommendationService.recommendUsingContentBasedStrategy(user);
+        } else {
+            recommendations = recommendationService.recommendUsingCollaborativeFilteringStrategy(user);
+        }
+
+        return ResponseEntity.ok(recommendations);
     }
 }

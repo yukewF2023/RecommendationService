@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.cybermall.backend.model.Order;
-import com.cybermall.backend.model.Product;
-import com.cybermall.backend.model.User;
+import com.cybermall.backend.model.*;
 import com.cybermall.backend.repository.*;
 
 import jakarta.transaction.Transactional;
