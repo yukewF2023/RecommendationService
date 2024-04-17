@@ -41,8 +41,12 @@ public class BackendApplication {
                                    OrderRepository orderRepository) {
         return args -> {
             // Create mock users
-            User user = userRepository.save(new User("yuketest"));
-            System.out.println("Created user with ID: " + user.getUserId());
+            User user1 = userRepository.save(new User("yuketest1"));
+            User user2 = userRepository.save(new User("yuketest2"));
+            User user3 = userRepository.save(new User("yuketest3"));
+            System.out.println("Created user with ID: " + user1.getUserId());
+            System.out.println("Created user with ID: " + user2.getUserId());
+            System.out.println("Created user with ID: " + user3.getUserId());
 
             // Create mock products
             Product product1 = productRepository.save(new Product("Apple", "Description 1", 10.0, "url1", "fruit"));
@@ -71,6 +75,20 @@ public class BackendApplication {
             Product meat3 = productRepository.save(new Product("Meat 3", "Meat Description 3", 18.0, "url20", "meat"));
             Product meat4 = productRepository.save(new Product("Meat 4", "Meat Description 4", 20.0, "url21", "meat"));
             Product meat5 = productRepository.save(new Product("Meat 5", "Meat Description 5", 22.0, "url22", "meat"));;
+
+            // create 10 more products, maybe 3 kitchen, 3 electronics, 4 clothing
+            Product kitchen1 = productRepository.save(new Product("Kitchen 1", "Kitchen Description 1", 10.0, "url23", "kitchen"));
+            Product kitchen2 = productRepository.save(new Product("Kitchen 2", "Kitchen Description 2", 20.0, "url24", "kitchen"));
+            Product kitchen3 = productRepository.save(new Product("Kitchen 3", "Kitchen Description 3", 30.0, "url25", "kitchen"));
+
+            Product electronics1 = productRepository.save(new Product("Electronics 1", "Electronics Description 1", 40.0, "url26", "electronics"));
+            Product electronics2 = productRepository.save(new Product("Electronics 2", "Electronics Description 2", 50.0, "url27", "electronics"));
+            Product electronics3 = productRepository.save(new Product("Electronics 3", "Electronics Description 3", 60.0, "url28", "electronics"));
+            
+            Product clothing1 = productRepository.save(new Product("Clothing 1", "Clothing Description 1", 70.0, "url29", "clothing"));
+            Product clothing2 = productRepository.save(new Product("Clothing 2", "Clothing Description 2", 80.0, "url30", "clothing"));
+            Product clothing3 = productRepository.save(new Product("Clothing 3", "Clothing Description 3", 90.0, "url31", "clothing"));
+            Product clothing4 = productRepository.save(new Product("Clothing 4", "Clothing Description 4", 100.0, "url32", "clothing"));
         };
     }
 }
