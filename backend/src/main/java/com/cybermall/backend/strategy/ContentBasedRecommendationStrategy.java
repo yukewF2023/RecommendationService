@@ -1,6 +1,5 @@
 package com.cybermall.backend.strategy;
 
-import java.util.ArrayList;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -71,7 +70,6 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
                 this.user.getUserId(), viewHistoriesJson, allProductsJson
             );
             
-            // System.out.println("JSON Input to Python Script: " + jsonInput);
             List<Long> recommendationsInProductIdList = this.pythonScriptInvoker.invokePythonScript(scriptPath, jsonInput);
 
             System.out.println("Recommendations: " + recommendationsInProductIdList);
