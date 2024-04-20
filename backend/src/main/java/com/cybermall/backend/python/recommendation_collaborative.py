@@ -19,44 +19,33 @@ def build_interaction_matrix(view_histories, products):
         for interaction in histories:  # Directly access each interaction dictionary
             product_idx = product_index.get(interaction['product_id'])
             if product_idx is not None:
-                matrix[user_idx, product_idx] = interaction['number_of_view']
+                matrix[user_idx, product_idx] += interaction['number_of_view']
 
     return matrix, product_index
 
 
 def recommend_products(matrix, user_index, product_index, all_products):
-    # Compute cosine similarity between users
     similarities = cosine_similarity(matrix)
     user_similarity = similarities[user_index]
-
-    # Sort other users by similarity to the target user
     similar_users = np.argsort(-user_similarity)
-
-    # Aggregate product scores from similar users
     product_scores = np.dot(user_similarity[similar_users], matrix[similar_users])
 
-    # Get product IDs sorted by the computed scores
-    recommended_product_ids = [product for product, idx in sorted(product_index.items(), key=lambda x: -product_scores[x[1]])]
+    recommended_scores = sorted(((score, prod) for prod, score in enumerate(product_scores) if prod not in matrix[user_index].nonzero()[0]), reverse=True, key=lambda x: x[0])
+    recommended_product_ids = [list(product_index.keys())[prod] for _, prod in recommended_scores]
 
-    # Filter out already viewed products by the user
-    viewed_products = set(matrix[user_index].nonzero()[0])
-    recommended_product_ids = [pid for pid in recommended_product_ids if product_index[pid] not in viewed_products]
+    non_reviewed_product_ids = [prod['product_id'] for prod in all_products if prod['product_id'] not in recommended_product_ids]
+    already_viewed = list(set(matrix[user_index].nonzero()[0]) - set(recommended_product_ids))
+    already_viewed = [list(product_index.keys())[idx] for idx in already_viewed]
 
-    # Include non-reviewed products sorted by popularity (number of views in this example)
-    non_reviewed_products = sorted((prod for prod in all_products if product_index[prod['product_id']] not in viewed_products),
-                                   key=lambda x: -x['number_of_view'])
-    recommended_product_ids += [prod['product_id'] for prod in non_reviewed_products]
+    final_recommendations = recommended_product_ids + non_reviewed_product_ids + already_viewed
+    final_recommendations = list(dict.fromkeys(final_recommendations))  # Remove duplicates while preserving order
 
-    # Add already viewed items randomly at the end
-    already_viewed = [prod['product_id'] for idx, prod in enumerate(all_products) if idx in viewed_products]
-    random.shuffle(already_viewed)
-    recommended_product_ids += already_viewed
-
-    return recommended_product_ids
+    return final_recommendations
 
 if __name__ == "__main__":
     try:
         data = sys.stdin.read()
+        # data = '{"user_id": 1, "user_view_histories": [{"user_id": 1, "product_id": 1, "number_of_view": 2, "price": 10.0, "category": "fruit"},{"user_id": 1, "product_id": 2, "number_of_view": 2, "price": 20.0, "category": "fruit"},{"user_id": 1, "product_id": 3, "number_of_view": 2, "price": 15.0, "category": "book"},{"user_id": 1, "product_id": 4, "number_of_view": 2, "price": 25.0, "category": "book"}], "all_view_histories": [{"user_id": 1, "product_id": 1, "number_of_view": 2, "price": 10.0, "category": "fruit"},{"user_id": 1, "product_id": 2, "number_of_view": 2, "price": 20.0, "category": "fruit"},{"user_id": 1, "product_id": 3, "number_of_view": 2, "price": 15.0, "category": "book"},{"user_id": 1, "product_id": 4, "number_of_view": 2, "price": 25.0, "category": "book"}], "all_products": [{"product_id": 1, "number_of_view": 2, "price": 10.0, "category": "fruit"},{"product_id": 2, "number_of_view": 2, "price": 20.0, "category": "fruit"},{"product_id": 3, "number_of_view": 2, "price": 15.0, "category": "book"},{"product_id": 4, "number_of_view": 2, "price": 25.0, "category": "book"},{"product_id": 5, "number_of_view": 1, "price": 30.0, "category": "book"},{"product_id": 6, "number_of_view": 1, "price": 35.0, "category": "book"},{"product_id": 7, "number_of_view": 1, "price": 40.0, "category": "book"},{"product_id": 8, "number_of_view": 1, "price": 5.0, "category": "vegetable"},{"product_id": 9, "number_of_view": 1, "price": 7.0, "category": "vegetable"},{"product_id": 10, "number_of_view": 1, "price": 8.0, "category": "vegetable"},{"product_id": 11, "number_of_view": 1, "price": 6.0, "category": "vegetable"},{"product_id": 12, "number_of_view": 1, "price": 9.0, "category": "vegetable"},{"product_id": 13, "number_of_view": 1, "price": 3.0, "category": "dairy"},{"product_id": 14, "number_of_view": 1, "price": 4.0, "category": "dairy"},{"product_id": 15, "number_of_view": 1, "price": 2.0, "category": "dairy"},{"product_id": 16, "number_of_view": 1, "price": 5.0, "category": "dairy"},{"product_id": 17, "number_of_view": 1, "price": 6.0, "category": "dairy"},{"product_id": 18, "number_of_view": 1, "price": 12.0, "category": "meat"},{"product_id": 19, "number_of_view": 1, "price": 15.0, "category": "meat"},{"product_id": 20, "number_of_view": 1, "price": 18.0, "category": "meat"},{"product_id": 21, "number_of_view": 1, "price": 20.0, "category": "meat"},{"product_id": 22, "number_of_view": 1, "price": 22.0, "category": "meat"},{"product_id": 23, "number_of_view": 1, "price": 10.0, "category": "kitchen"},{"product_id": 24, "number_of_view": 1, "price": 20.0, "category": "kitchen"},{"product_id": 25, "number_of_view": 1, "price": 30.0, "category": "kitchen"},{"product_id": 26, "number_of_view": 1, "price": 40.0, "category": "electronics"},{"product_id": 27, "number_of_view": 1, "price": 50.0, "category": "electronics"},{"product_id": 28, "number_of_view": 1, "price": 60.0, "category": "electronics"},{"product_id": 29, "number_of_view": 1, "price": 70.0, "category": "clothing"},{"product_id": 30, "number_of_view": 1, "price": 80.0, "category": "clothing"},{"product_id": 31, "number_of_view": 1, "price": 90.0, "category": "clothing"},{"product_id": 32, "number_of_view": 1, "price": 100.0, "category": "clothing"}]}'
         input_data = json.loads(data)
         user_view_histories = input_data['user_view_histories']  # Single list of dictionaries
         all_view_histories = input_data['all_view_histories']  # List of lists of dictionaries
