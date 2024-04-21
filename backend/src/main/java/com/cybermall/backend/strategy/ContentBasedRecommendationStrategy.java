@@ -7,17 +7,18 @@ import java.io.*;
 
 import com.cybermall.backend.model.*;
 import com.cybermall.backend.repository.*;
+import com.cybermall.backend.service.ProductService;
 import com.cybermall.backend.service.PythonScriptInvoker;
 
 public class ContentBasedRecommendationStrategy implements RecommendationStrategy {
     
-    private ProductRepository productRepository;
+    private ProductService productService;
     private User user;
     private ViewHistoryRepository viewHistoryRepository;
     private PythonScriptInvoker pythonScriptInvoker;
 
-    public ContentBasedRecommendationStrategy(ProductRepository productRepository, User user, ViewHistoryRepository viewHistoryRepository, PythonScriptInvoker pythonScriptInvoker) {
-        this.productRepository = productRepository;
+    public ContentBasedRecommendationStrategy(ProductService productService, User user, ViewHistoryRepository viewHistoryRepository, PythonScriptInvoker pythonScriptInvoker) {
+        this.productService = productService;
         this.user = user;
         this.viewHistoryRepository = viewHistoryRepository;
         this.pythonScriptInvoker = pythonScriptInvoker;
@@ -27,10 +28,10 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
         StringBuilder json = new StringBuilder("[");
         for (ViewHistory viewHistory : viewHistories) {
             json.append("{")
-                .append("\"product_id\": ").append(viewHistory.getProduct().getProductId()).append(", ")
+                .append("\"product_id\": ").append(viewHistory.getProductId()).append(", ")
                 .append("\"number_of_view\": ").append(viewHistory.getNumberOfViews()).append(", ")
-                .append("\"price\": ").append(viewHistory.getProduct().getPrice()).append(", ")
-                .append("\"category\": \"").append(viewHistory.getProduct().getCategory()).append("\"")
+                .append("\"price\": ").append(productService.getProductById(viewHistory.getProductId()).getPrice()).append(", ")
+                .append("\"category\": \"").append(productService.getProductById(viewHistory.getProductId()).getCategory()).append("\"")
                 .append("},");
         }
         json.deleteCharAt(json.length() - 1); // Remove the trailing comma
@@ -56,7 +57,7 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
     @Override
     public List<Product> recommend(User user) {
         List<ViewHistory> currentUserViewHistories = this.viewHistoryRepository.findByUserId(user.getUserId());
-        List<Product> allProducts = this.productRepository.findAll();
+        List<Product> allProducts = this.productService.getAllProducts();
         System.out.println("Using content-based strategy to recommend products");
         try {
             String scriptPath = "src/main/java/com/cybermall/backend/python/recommendation_content_based.py";
@@ -84,7 +85,7 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
             // Log the exception and handle it appropriately
             ((Throwable) e).printStackTrace();
             // Return default recommendation list in case of failure
-            return productRepository.findAll().stream()
+            return this.productService.getAllProducts().stream()
                 .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
                 .collect(Collectors.toList());
         }

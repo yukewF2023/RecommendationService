@@ -4,21 +4,25 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.cybermall.backend.model.*;
-import com.cybermall.backend.repository.ProductRepository;
+import com.cybermall.backend.model.Product;
+import com.cybermall.backend.model.User;
+import com.cybermall.backend.service.ProductService;
 
 public class SimpleRecommendationStrategy implements RecommendationStrategy {
-    private ProductRepository productRepository;
+    private ProductService productService;
 
-    public SimpleRecommendationStrategy(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public SimpleRecommendationStrategy(ProductService productService) {
+        this.productService = productService;
     }
 
     @Override
     public List<Product> recommend(User user) {
         System.out.println("Using simple strategy to recommend products based on popularity");
-        return productRepository.findAll().stream()
-                .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
-                .collect(Collectors.toList());
+        // Fetch all products using ProductService which interacts with external API
+        List<Product> products = productService.getAllProducts();
+        // Sort products based on the number of views in descending order
+        return products.stream()
+                       .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
+                       .collect(Collectors.toList());
     }
 }

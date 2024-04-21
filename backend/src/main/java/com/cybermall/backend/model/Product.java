@@ -1,14 +1,8 @@
 package com.cybermall.backend.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "products")
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // this is for JPA
+    private Long id;
     private String name;
     private String description;
     private double price;
@@ -16,20 +10,25 @@ public class Product {
     private String category;
     private Integer numberOfViews;
 
-    // default constructor for JPA
     public Product() {}
 
-    public Product(String name, String description, double price, String imageUrl, String category) {
+    // Include a constructor if needed for API deserialization
+    public Product(Long id, String name, String description, double price, String imageUrl, String category, Integer numberOfViews) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.imageUrl = imageUrl;
         this.category = category;
-        this.numberOfViews = 1;
+        this.numberOfViews = numberOfViews;
     }
 
     public Long getProductId() {
         return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

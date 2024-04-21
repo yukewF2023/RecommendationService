@@ -7,16 +7,17 @@ import java.io.*;
 
 import com.cybermall.backend.model.*;
 import com.cybermall.backend.repository.*;
+import com.cybermall.backend.service.ProductService;
 import com.cybermall.backend.service.PythonScriptInvoker;
 
 public class CollaborativeFilteringStrategy implements RecommendationStrategy {
-    private ProductRepository productRepository;
+    private ProductService productService;
     private User user;
     private ViewHistoryRepository viewHistoryRepository;
     private PythonScriptInvoker pythonScriptInvoker;
 
-    public CollaborativeFilteringStrategy(ProductRepository productRepository, User user, ViewHistoryRepository viewHistoryRepository, PythonScriptInvoker pythonScriptInvoker) {
-        this.productRepository = productRepository;
+    public CollaborativeFilteringStrategy(ProductService productService, User user, ViewHistoryRepository viewHistoryRepository, PythonScriptInvoker pythonScriptInvoker) {
+        this.productService = productService;
         this.user = user;
         this.viewHistoryRepository = viewHistoryRepository;
         this.pythonScriptInvoker = pythonScriptInvoker;
@@ -25,11 +26,11 @@ public class CollaborativeFilteringStrategy implements RecommendationStrategy {
         StringBuilder json = new StringBuilder("[");
         for (ViewHistory viewHistory : viewHistories) {
             json.append("{")
-                .append("\"user_id\": ").append(viewHistory.getUser().getUserId()).append(", ")
-                .append("\"product_id\": ").append(viewHistory.getProduct().getProductId()).append(", ")
+                .append("\"user_id\": ").append(viewHistory.getUserId()).append(", ")
+                .append("\"product_id\": ").append(viewHistory.getProductId()).append(", ")
                 .append("\"number_of_view\": ").append(viewHistory.getNumberOfViews()).append(", ")
-                .append("\"price\": ").append(viewHistory.getProduct().getPrice()).append(", ")
-                .append("\"category\": \"").append(viewHistory.getProduct().getCategory()).append("\"")
+                .append("\"price\": ").append(productService.getProductById(viewHistory.getProductId()).getPrice()).append(", ")
+                .append("\"category\": \"").append(productService.getProductById(viewHistory.getProductId()).getCategory()).append("\"")
                 .append("},");
         }
         json.deleteCharAt(json.length() - 1); // Remove the trailing comma
@@ -59,7 +60,7 @@ public class CollaborativeFilteringStrategy implements RecommendationStrategy {
         // retrieve all view history, but don't include the current user's view history
         List<ViewHistory> allViewHistories = this.viewHistoryRepository.findAll();
 
-        List<Product> allProducts = this.productRepository.findAll();
+        List<Product> allProducts = this.productService.getAllProducts();
 
         System.out.println("Using collaborative filtering strategy to recommend products");
         try {
@@ -90,7 +91,7 @@ public class CollaborativeFilteringStrategy implements RecommendationStrategy {
             // Log the exception and handle it appropriately
             ((Throwable) e).printStackTrace();
             // Return default recommendation list in case of failure
-            return productRepository.findAll().stream()
+            return this.productService.getAllProducts().stream()
                 .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
                 .collect(Collectors.toList());
         }

@@ -9,39 +9,34 @@ public class ViewHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @ManyToOne(fetch = FetchType.LAZY) // a user can have multiple view histories
-    @JoinColumn(name = "user_id")
-    private User user;
-    
-    @ManyToOne(fetch = FetchType.LAZY) // a product can have multiple view histories
-    @JoinColumn(name = "product_id")
-    private Product product;
+
+    private Long userId;
+    private Long productId;
 
     private Integer numberOfViews;
 
     public ViewHistory() {}
 
-    public ViewHistory(User user, Product product) {
-        this.user = user;
-        this.product = product;
+    public ViewHistory(Long userId, Long productId) {
+        this.userId = userId;
+        this.productId = productId;
         this.numberOfViews = 1; // Initialize with 1 view
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return this.userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Product getProduct() {
-        return this.product;
+    public Long getProductId() {
+        return this.productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProduct(Long productId) {
+        this.productId = productId;
     }
 
     public Integer getNumberOfViews() {
