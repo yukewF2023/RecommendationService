@@ -55,7 +55,7 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
     }
     
     @Override
-    public List<Product> recommend(User user) {
+    public List<Long> recommend(User user) {
         List<ViewHistory> currentUserViewHistories = this.viewHistoryRepository.findByUserId(user.getUserId());
         List<Product> allProducts = this.productService.getAllProducts();
         System.out.println("Using content-based strategy to recommend products");
@@ -76,18 +76,21 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
             System.out.println("Recommendations: " + recommendationsInProductIdList);
 
             // Return the recommended products
-            return allProducts.stream()
-                .filter(product -> recommendationsInProductIdList.contains(product.getProductId()))
-                .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
-                .collect(Collectors.toList());
+            return recommendationsInProductIdList;
+            // return allProducts.stream()
+            //     .filter(product -> recommendationsInProductIdList.contains(product.getProductId()))
+            //     .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
+            //     .collect(Collectors.toList());
 
         } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
             // Log the exception and handle it appropriately
             ((Throwable) e).printStackTrace();
             // Return default recommendation list in case of failure
-            return this.productService.getAllProducts().stream()
-                .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
-                .collect(Collectors.toList());
+            return this.productService.getAllProducts()
+                    .stream()
+                    .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
+                    .map(Product::getProductId)
+                    .collect(Collectors.toList());
         }
     }
 }

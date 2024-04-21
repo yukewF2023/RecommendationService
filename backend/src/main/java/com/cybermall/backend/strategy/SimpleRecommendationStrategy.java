@@ -16,13 +16,17 @@ public class SimpleRecommendationStrategy implements RecommendationStrategy {
     }
 
     @Override
-    public List<Product> recommend(User user) {
+    public List<Long> recommend(User user) {
         System.out.println("Using simple strategy to recommend products based on popularity");
         // Fetch all products using ProductService which interacts with external API
         List<Product> products = productService.getAllProducts();
         // Sort products based on the number of views in descending order
+        // return products.stream()
+        //                .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
+        //                .collect(Collectors.toList());
         return products.stream()
                        .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
+                       .map(Product::getProductId)
                        .collect(Collectors.toList());
     }
 }

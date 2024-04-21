@@ -112,7 +112,7 @@ public class UserService {
                     JSONObject userObj = usersArray.getJSONObject(i);
                     User user = new User(
                         userObj.getLong("id"),
-                        userObj.getString("userName")
+                        userObj.optString("userName", null)
                     );
                     users.add(user);
                 }

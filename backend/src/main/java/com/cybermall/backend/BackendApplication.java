@@ -42,11 +42,12 @@ public class BackendApplication {
         // productService.updateProductView(1781548549725499394L, 10);
 
         // 4. loginUser
-        // UserService userService = new UserService();
+        UserService userService = new UserService();
         // userService.loginUser("test", "testtest");
         // User user = userService.getCurrentLoggedInUser();
-        // System.out.println("User ID: " + user.getUserId());
-        // System.out.println("User Name: " + user.getUserName());
+        User user = userService.getUserById(1780429641937326081L);
+        System.out.println("User ID: " + user.getUserId());
+        System.out.println("User Name: " + user.getUserName());
 
     }
 }

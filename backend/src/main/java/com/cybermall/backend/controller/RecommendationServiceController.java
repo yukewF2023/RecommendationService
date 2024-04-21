@@ -56,14 +56,14 @@ public class RecommendationServiceController {
      * @return a list of recommended products, or an error response if the user could not be found
      */
     @GetMapping("/")
-    public ResponseEntity<List<Product>> getRecommendations(@RequestParam Long userId) {
+    public ResponseEntity<List<Long>> getRecommendations(@RequestParam Long userId) {
         User user = this.userService.getUserById(userId);
         if (user == null) {
             // throw reception error
             throw new RuntimeException("User not found!");
         }
         this.setStrategy(user);
-        List<Product> recommendations = currentStrategy.recommend(user);
+        List<Long> recommendations = currentStrategy.recommend(user);
         return ResponseEntity.ok(recommendations);
     }
 }

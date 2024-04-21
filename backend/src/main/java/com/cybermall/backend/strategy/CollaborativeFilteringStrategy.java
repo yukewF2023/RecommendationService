@@ -54,7 +54,7 @@ public class CollaborativeFilteringStrategy implements RecommendationStrategy {
     }
 
     @Override
-    public List<Product> recommend(User user) {
+    public List<Long> recommend(User user) {
         List<ViewHistory> currentUserViewHistories = this.viewHistoryRepository.findByUserId(user.getUserId());
 
         // retrieve all view history, but don't include the current user's view history
@@ -80,19 +80,22 @@ public class CollaborativeFilteringStrategy implements RecommendationStrategy {
             List<Long> recommendationsInProductIdList = this.pythonScriptInvoker.invokePythonScript(scriptPath, jsonInput);
 
             System.out.println("Recommendations: " + recommendationsInProductIdList);
-
+            
             // Return the recommended products
-            return allProducts.stream()
-                .filter(product -> recommendationsInProductIdList.contains(product.getProductId()))
-                .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
-                .collect(Collectors.toList());
+            return recommendationsInProductIdList;
+            // return allProducts.stream()
+            //     .filter(product -> recommendationsInProductIdList.contains(product.getProductId()))
+            //     .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
+            //     .collect(Collectors.toList());
 
         } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
             // Log the exception and handle it appropriately
             ((Throwable) e).printStackTrace();
             // Return default recommendation list in case of failure
-            return this.productService.getAllProducts().stream()
+            return this.productService.getAllProducts()
+                .stream()
                 .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
+                .map(Product::getProductId)
                 .collect(Collectors.toList());
         }
     }
