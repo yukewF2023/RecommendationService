@@ -13,11 +13,9 @@
 
 package com.cybermall.backend;
 
-import com.cybermall.backend.model.Order;
 import com.cybermall.backend.model.Product;
 import com.cybermall.backend.model.User;
 import com.cybermall.backend.model.ViewHistory;
-import com.cybermall.backend.repository.OrderRepository;
 import com.cybermall.backend.repository.ProductRepository;
 import com.cybermall.backend.repository.UserRepository;
 import com.cybermall.backend.repository.ViewHistoryRepository;
@@ -37,8 +35,7 @@ public class BackendApplication {
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, 
                                    ProductRepository productRepository, 
-                                   ViewHistoryRepository viewHistoryRepository, 
-                                   OrderRepository orderRepository) {
+                                   ViewHistoryRepository viewHistoryRepository) {
         return args -> {
             // Create mock users
             User user1 = userRepository.save(new User("yuketest1"));

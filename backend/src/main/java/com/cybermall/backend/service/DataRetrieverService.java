@@ -13,13 +13,11 @@ public class DataRetrieverService {
     private final UserService userService;
     private final ProductService productService;
     private final ViewHistoryService viewHistoryService;
-    private final OrderService orderService;
 
-    public DataRetrieverService(UserService userService, ProductService productService, ViewHistoryService viewHistoryService, OrderService orderService) {
+    public DataRetrieverService(UserService userService, ProductService productService, ViewHistoryService viewHistoryService) {
         this.userService = userService;
         this.productService = productService;
         this.viewHistoryService = viewHistoryService;
-        this.orderService = orderService;
     }
 
     public RecommendationData retrieveDataForRecommendation(Long userId) {
@@ -31,8 +29,6 @@ public class DataRetrieverService {
         RecommendationData data = new RecommendationData(user);
         data.setProducts(productService.getAllProducts());
         data.setViewHistory(viewHistoryService.getViewHistoryByUser(user));
-        data.setOrders(orderService.getOrdersByUser(user));
-
         return data;
     }
 }

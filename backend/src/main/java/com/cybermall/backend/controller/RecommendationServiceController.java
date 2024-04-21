@@ -19,21 +19,18 @@ public class RecommendationServiceController {
     private final ViewHistoryRepository viewHistoryRepository;
     private final ViewHistoryService viewHistoryService;
     private final ProductRepository productRepository;
-    private final OrderRepository orderRepository;
     private RecommendationStrategy currentStrategy;
 
     public RecommendationServiceController(DataRetrieverService dataRetrieverService,
                                            UserRepository userRepository,
                                            ViewHistoryRepository viewHistoryRepository,
                                            ViewHistoryService viewHistoryService,
-                                           ProductRepository productRepository,
-                                           OrderRepository orderRepository) {
+                                           ProductRepository productRepository) {
         this.dataRetrieverService = dataRetrieverService;
         this.userRepository = userRepository;
         this.viewHistoryRepository = viewHistoryRepository;
         this.viewHistoryService = viewHistoryService;
         this.productRepository = productRepository;
-        this.orderRepository = orderRepository;
     }
 
     private void setStrategy(User user) {
@@ -51,7 +48,7 @@ public class RecommendationServiceController {
             currentStrategy = new ContentBasedRecommendationStrategy(this.productRepository, user, this.viewHistoryRepository, pythonInvoker);
         } else {
             PythonScriptInvoker pythonInvoker = new PythonScriptInvoker();
-            currentStrategy = new CollaborativeFilteringStrategy(this.productRepository, user, this.viewHistoryRepository, pythonInvoker, this.orderRepository);
+            currentStrategy = new CollaborativeFilteringStrategy(this.productRepository, user, this.viewHistoryRepository, pythonInvoker);
         }
     }
 

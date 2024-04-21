@@ -7,7 +7,6 @@ public class RecommendationData {
     private User user;
     private List<Product> products;
     private List<ViewHistory> viewHistory;
-    private List<Order> orders;
 
     // Default constructor for JPA
     public RecommendationData() {}
@@ -17,7 +16,6 @@ public class RecommendationData {
         this.user = user;
         this.products = new ArrayList<Product>();
         this.viewHistory = new ArrayList<ViewHistory>();
-        this.orders = new ArrayList<Order>();
     }
 
     public User getUser() {
@@ -42,13 +40,5 @@ public class RecommendationData {
 
     public void setViewHistory(List<ViewHistory> viewHistory) {
         this.viewHistory = viewHistory;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
     }
 }

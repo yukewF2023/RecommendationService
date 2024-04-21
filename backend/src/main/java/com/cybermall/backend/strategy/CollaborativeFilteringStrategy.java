@@ -14,14 +14,12 @@ public class CollaborativeFilteringStrategy implements RecommendationStrategy {
     private User user;
     private ViewHistoryRepository viewHistoryRepository;
     private PythonScriptInvoker pythonScriptInvoker;
-    private OrderRepository orderRepository;
 
-    public CollaborativeFilteringStrategy(ProductRepository productRepository, User user, ViewHistoryRepository viewHistoryRepository, PythonScriptInvoker pythonScriptInvoker, OrderRepository orderRepository) {
+    public CollaborativeFilteringStrategy(ProductRepository productRepository, User user, ViewHistoryRepository viewHistoryRepository, PythonScriptInvoker pythonScriptInvoker) {
         this.productRepository = productRepository;
         this.user = user;
         this.viewHistoryRepository = viewHistoryRepository;
         this.pythonScriptInvoker = pythonScriptInvoker;
-        this.orderRepository = orderRepository;
     }
     private String convertViewHistoriesToJson(List<ViewHistory> viewHistories) {
         StringBuilder json = new StringBuilder("[");
@@ -54,32 +52,12 @@ public class CollaborativeFilteringStrategy implements RecommendationStrategy {
         return json.toString();
     }
 
-    private String convertOrdersToJson(List<Order> orders) {
-        StringBuilder json = new StringBuilder("[");
-        for (Order order : orders) {
-            json.append("{")
-                .append("\"product_id\": ").append(order.getProduct().getProductId()).append(", ")
-                .append("\"price\": ").append(order.getProduct().getPrice()).append(", ")
-                .append("\"category\": \"").append(order.getProduct().getCategory()).append("\"")
-                .append("},");
-        }
-        json.deleteCharAt(json.length() - 1); // Remove the trailing comma
-        json.append("]");
-        return json.toString();
-    }
-
     @Override
     public List<Product> recommend(User user) {
         List<ViewHistory> currentUserViewHistories = this.viewHistoryRepository.findByUserId(user.getUserId());
 
         // retrieve all view history, but don't include the current user's view history
         List<ViewHistory> allViewHistories = this.viewHistoryRepository.findAll();
-
-        List<Order> currentUserOrders = this.orderRepository.findByUserId(user.getUserId());
-
-        // retrieve all orders, but don't include the current user's orders
-        List<Order> allOrders = this.orderRepository.findAll();
-        allOrders.removeAll(currentUserOrders);
 
         List<Product> allProducts = this.productRepository.findAll();
 
@@ -89,8 +67,6 @@ public class CollaborativeFilteringStrategy implements RecommendationStrategy {
             
             String viewHistoriesCurrentUserJson = this.convertViewHistoriesToJson(currentUserViewHistories);
             String viewHistoriesAllJson = this.convertViewHistoriesToJson(allViewHistories);
-            String ordersCurrentUserJson = this.convertOrdersToJson(currentUserOrders);
-            String ordersAllJson = this.convertOrdersToJson(allOrders);
             String allProductsJson = this.convertProductsToJson(allProducts);
 
             // Prepare the JSON input for the Python script

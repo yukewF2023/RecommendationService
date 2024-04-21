@@ -8,12 +8,10 @@ import com.cybermall.backend.model.*;
 public class InteractionService {
 
     private final ViewHistoryService viewHistoryService;
-    private final OrderService orderService;
     private final ProductService productService;
 
-    public InteractionService(ViewHistoryService viewHistoryService, OrderService orderService, ProductService productService) {
+    public InteractionService(ViewHistoryService viewHistoryService, ProductService productService) {
         this.viewHistoryService = viewHistoryService;
-        this.orderService = orderService;
         this.productService = productService;
     }
 
@@ -23,10 +21,10 @@ public class InteractionService {
         return this.productService.getProductById(productId);
     }
 
-    public Order simulateProductOrder(Long userId, Long productId) {
-        Order order = this.orderService.recordOrder(userId, productId);
-        // After placing the order, retrieve and return the order details
-        return order;
-    }
+    // public Order simulateProductOrder(Long userId, Long productId) {
+    //     Order order = this.orderService.recordOrder(userId, productId);
+    //     // After placing the order, retrieve and return the order details
+    //     return order;
+    // }
 }
 

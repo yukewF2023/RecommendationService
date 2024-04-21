@@ -23,11 +23,5 @@ public class InteractionController {
         Product product = interactionService.simulateProductView(request.getUserId(), request.getProductId());
         return ResponseEntity.ok(product);
     }
-
-    @PostMapping("/order")
-    public ResponseEntity<Order> simulateOrder(@Valid @RequestBody InteractionRequest request) {
-        Order order = interactionService.simulateProductOrder(request.getUserId(), request.getProductId());
-        return ResponseEntity.ok(order);
-    }
 }
 
