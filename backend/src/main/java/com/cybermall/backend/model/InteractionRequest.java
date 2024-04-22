@@ -1,6 +1,9 @@
 package com.cybermall.backend.model;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Represents a request to record a user interaction with a product.
+ */
 public class InteractionRequest {
     
     @NotNull(message = "User ID cannot be null")

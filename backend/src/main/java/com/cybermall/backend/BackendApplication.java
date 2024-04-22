@@ -1,17 +1,10 @@
 package com.cybermall.backend;
-
-import com.cybermall.backend.model.Product;
-import com.cybermall.backend.model.User;
-import com.cybermall.backend.model.ViewHistory;
-import com.cybermall.backend.repository.ViewHistoryRepository;
-
-import java.util.List;
-
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.cybermall.backend.service.*;
 
+/**
+ * The main class for the backend application.
+ */
 @SpringBootApplication
 public class BackendApplication {
 
@@ -40,13 +33,11 @@ public class BackendApplication {
         // 3. updateProductView
         // productService.updateProductView(1781548549725499394L, 10);
 
-        // 4. loginUser
-        UserService userService = new UserService();
-        // userService.loginUser("test", "testtest");
-        // User user = userService.getCurrentLoggedInUser();
-        User user = userService.getUserById(1780429641937326081L);
-        System.out.println("User ID: " + user.getUserId());
-        System.out.println("User Name: " + user.getUserName());
+        // 4. User APIs
+        // UserService userService = new UserService();
+        // User user = userService.getUserById(1780429641937326081L);
+        // System.out.println("User ID: " + user.getUserId());
+        // System.out.println("User Name: " + user.getUserName());
 
     }
 }

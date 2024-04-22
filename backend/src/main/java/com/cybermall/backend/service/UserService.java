@@ -4,21 +4,20 @@ import com.cybermall.backend.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+/**
+ * This class is responsible for fetching user data from the user service.
+ */
 @Service
 public class UserService {
 
@@ -30,6 +29,11 @@ public class UserService {
         this.restTemplate = new RestTemplate();
     }
 
+    /**
+     * Fetches all users from the user service.
+     *
+     * @return A list of users.
+     */
     public List<User> getAllUsers() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

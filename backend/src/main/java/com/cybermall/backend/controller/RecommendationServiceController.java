@@ -10,6 +10,10 @@ import com.cybermall.backend.service.*;
 import com.cybermall.backend.strategy.*;
 import com.cybermall.backend.repository.*;
 
+/**
+ * The controller class for the Recommendation Service API.
+ * Handles requests related to retrieving recommended products based on user preferences and behavior.
+ */
 @RestController
 @RequestMapping("/api/recommendations")
 public class RecommendationServiceController {
@@ -30,6 +34,11 @@ public class RecommendationServiceController {
         this.productService = productService;
     }
 
+    /**
+     * Sets the recommendation strategy based on the user's behavior and preferences.
+     *
+     * @param user the user for whom to set the recommendation strategy
+     */
     private void setStrategy(User user) {
         int totalProducts = this.productService.getAllProducts().size();
         int totalUniqueProductsViewedByCurrentUser = viewHistoryService.getViewHistoryByUser(user.getUserId()).size();
@@ -59,12 +68,11 @@ public class RecommendationServiceController {
     public ResponseEntity<List<Long>> getRecommendations(@RequestParam Long userId) {
         User user = this.userService.getUserById(userId);
         if (user == null) {
-            // throw reception error
+            // throw exception error
             throw new RuntimeException("User not found!");
         }
         this.setStrategy(user);
         List<Long> recommendations = currentStrategy.recommend(user);
-        // System.out.println("Recommended products from backend: " + ResponseEntity.ok(recommendations));
         return ResponseEntity.ok(recommendations);
     }
 }

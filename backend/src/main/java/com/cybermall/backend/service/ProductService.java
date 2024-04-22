@@ -14,11 +14,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+/**
+ * This class represents a service for managing products.
+ * It provides methods for fetching product information from an external API,
+ * as well as updating the view count of a product.
+ */
 @Service
 public class ProductService {
 
@@ -28,13 +32,16 @@ public class ProductService {
 
     public ProductService() {
         this.restTemplate = new RestTemplate();
-        // Consider configuring timeouts here using ClientHttpRequestFactory
     }
 
+    /**
+     * Retrieves a product by its ID from the external API.
+     *
+     * @param productId The ID of the product to retrieve.
+     * @return The product details.
+     */
     public Product getProductById(Long productId) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(productsUrl + "/" + productId);
-
-        System.out.println("uriBuilder: " + uriBuilder.toUriString());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -49,10 +56,7 @@ public class ProductService {
             );
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                System.out.println("Response toString: " + response.toString());
-                System.out.println("Response getBody: " + response.getBody());
                 JSONObject jsonResponse = new JSONObject(response.getBody());
-                System.out.println("jsonResponse: " + jsonResponse.toString());
                 JSONObject jsonData = jsonResponse.getJSONObject("data");
 
                 // Manually extracting and setting properties
@@ -76,13 +80,17 @@ public class ProductService {
         }
     }       
 
+    /**
+     * Retrieves all products from the external API.
+     *
+     * @return A list of all products.
+     */
     public List<Product> getAllProducts() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>("{}", headers); // Empty JSON body
 
         try {
-            // Perform the POST request
             ResponseEntity<String> response = restTemplate.postForEntity(productsUrl, entity, String.class);
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
@@ -114,6 +122,12 @@ public class ProductService {
         }
     }
 
+    /**
+     * Updates the view count of a product in the external API.
+     *
+     * @param productId The ID of the product to update.
+     * @param newViewCount The new view count for the product.
+     */
     public void updateProductView(Long productId, Integer newViewCount) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");

@@ -1,5 +1,8 @@
 package com.cybermall.backend.model;
 
+/**
+ * Represents a product in the catalog.
+ */
 public class Product {
 
     private Long id;
@@ -12,7 +15,7 @@ public class Product {
 
     public Product() {}
 
-    // Include a constructor if needed for API deserialization
+    // Include a constructor because it's needed for API deserialization
     public Product(Long id, String name, String description, double price, String imageUrl, String category, Integer numberOfViews) {
         this.id = id;
         this.name = name;

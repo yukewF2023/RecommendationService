@@ -7,13 +7,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
+    /**
+     * Configures CORS settings for the application.
+     * 
+     * @param registry The CORS registry to configure.
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        // 覆盖所有请求
         registry.addMapping("/**")
-                // 允许发送 Cookie
+                // Cookies allowed
                 .allowCredentials(true)
-                // 放行哪些域名（必须用 patterns，否则 * 会和 allowCredentials 冲突）
+                // All origins allowed
                 .allowedOriginPatterns("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")

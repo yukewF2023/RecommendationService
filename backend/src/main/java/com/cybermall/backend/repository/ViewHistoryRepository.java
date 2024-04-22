@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository for managing view history data.
+ */
 @Repository
 public interface ViewHistoryRepository extends JpaRepository<ViewHistory, Long> {
 

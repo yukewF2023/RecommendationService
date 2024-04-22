@@ -10,6 +10,9 @@ import com.cybermall.backend.repository.*;
 import com.cybermall.backend.service.ProductService;
 import com.cybermall.backend.service.PythonScriptInvoker;
 
+/**
+ * Represents a recommendation strategy that uses content-based filtering to recommend products to a user.
+ */
 public class ContentBasedRecommendationStrategy implements RecommendationStrategy {
     
     private ProductService productService;
@@ -24,6 +27,12 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
         this.pythonScriptInvoker = pythonScriptInvoker;
     }
 
+    /**
+     * Converts a list of view histories to a JSON string.
+     * 
+     * @param viewHistories The list of view histories to convert.
+     * @return The JSON string representing the view histories.
+     */
     private String convertViewHistoriesToJson(List<ViewHistory> viewHistories) {
         StringBuilder json = new StringBuilder("[");
         for (ViewHistory viewHistory : viewHistories) {
@@ -39,6 +48,12 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
         return json.toString();
     }
 
+    /**
+     * Converts a list of products to a JSON string.
+     * 
+     * @param products The list of products to convert.
+     * @return The JSON string representing the products.
+     */
     private String convertProductsToJson(List<Product> products) {
         StringBuilder json = new StringBuilder("[");
         for (Product product : products) {
@@ -54,6 +69,12 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
         return json.toString();
     }
     
+    /**
+     * Recommends products to a user based on their view history and the content of the products.
+     * 
+     * @param user The user to recommend products to.
+     * @return A list of product IDs recommended to the user.
+     */
     @Override
     public List<Long> recommend(User user) {
         List<ViewHistory> currentUserViewHistories = this.viewHistoryRepository.findByUserId(user.getUserId());
@@ -77,13 +98,8 @@ public class ContentBasedRecommendationStrategy implements RecommendationStrateg
 
             // Return the recommended products
             return recommendationsInProductIdList;
-            // return allProducts.stream()
-            //     .filter(product -> recommendationsInProductIdList.contains(product.getProductId()))
-            //     .sorted(Comparator.comparing(Product::getNumberOfViews).reversed())
-            //     .collect(Collectors.toList());
 
         } catch (IOException | InterruptedException | ExecutionException | TimeoutException e) {
-            // Log the exception and handle it appropriately
             ((Throwable) e).printStackTrace();
             // Return default recommendation list in case of failure
             return this.productService.getAllProducts()

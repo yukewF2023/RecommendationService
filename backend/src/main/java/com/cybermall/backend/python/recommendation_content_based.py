@@ -4,6 +4,19 @@ from collections import defaultdict
 import random
 
 def recommend_products(view_histories, all_products):
+    """
+    Recommends products based on user's view histories and all available products.
+
+    Args:
+        view_histories (list): A list of dictionaries representing the user's view histories.
+            Each dictionary contains information about a viewed product, including 'product_id' and 'category'.
+        all_products (list): A list of dictionaries representing all available products.
+            Each dictionary contains information about a product, including 'product_id', 'category', 'number_of_view', and 'price'.
+
+    Returns:
+        list: A list of recommended product IDs, including both recommended and non-recommended products.
+            The list is sorted based on the number of views and other criteria specified in the code.
+    """
     # Collect categories viewed by the user
     user_categories = defaultdict(int)
     for history in view_histories:
@@ -46,18 +59,14 @@ def recommend_products(view_histories, all_products):
 
 if __name__ == "__main__":
     try:
-        # Read the JSON input
         input_str = sys.stdin.read()
         input_data = json.loads(input_str)
         
-        # Extract user view histories and all products
         user_view_histories = input_data.get('user_view_histories', [])
         all_products = input_data.get('all_products', [])
         
-        # Get recommended product ids
         final_recommendation_ids = recommend_products(user_view_histories, all_products)
         
-        # Output the recommendations as JSON
         print(json.dumps(final_recommendation_ids))
         
     except json.JSONDecodeError as e:

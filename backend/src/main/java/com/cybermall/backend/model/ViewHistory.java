@@ -2,6 +2,9 @@ package com.cybermall.backend.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Represents a view history of a product by a user.
+ */
 @Entity
 @Table(name = "view_history")
 public class ViewHistory {
@@ -20,7 +23,7 @@ public class ViewHistory {
     public ViewHistory(Long userId, Long productId) {
         this.userId = userId;
         this.productId = productId;
-        this.numberOfViews = 1; // Initialize with 1 view
+        this.numberOfViews = 1; // Initialize with 1 view for machine learning purposes
     }
 
     public Long getUserId() {

@@ -7,10 +7,26 @@ import java.util.concurrent.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+/**
+ * This class is responsible for invoking a Python script and capturing its output.
+ * It provides a method to invoke a Python script with a given script path and JSON input,
+ * and returns a list of product IDs as the result.
+ */
 public class PythonScriptInvoker {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Invokes a Python script with the given script path and JSON input.
+     *
+     * @param scriptPath The path to the Python script to invoke.
+     * @param jsonInput The JSON input to pass to the script.
+     * @return A list of product IDs as the result of the script.
+     * @throws IOException If an I/O error occurs.
+     * @throws InterruptedException If the current thread is interrupted.
+     * @throws ExecutionException If an exception occurs during script execution.
+     * @throws TimeoutException If the script execution times out.
+     */
     public List<Long> invokePythonScript(String scriptPath, String jsonInput) throws IOException, InterruptedException, ExecutionException, TimeoutException {
         ProcessBuilder builder = new ProcessBuilder("python3", scriptPath);
         builder.redirectErrorStream(true);

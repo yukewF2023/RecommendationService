@@ -8,6 +8,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service for managing view history of products by users.
+ */
 @Service
 public class ViewHistoryService {
 
@@ -21,12 +24,17 @@ public class ViewHistoryService {
         this.productService = productService;
     }
 
+    /**
+     * Records a view of a product by a user.
+     *
+     * @param userId The ID of the user who viewed the product.
+     * @param productId The ID of the product being viewed.
+     */
     @Transactional
     public void recordView(Long userId, Long productId) {
         User user = userService.getUserById(userId);
         Product product = productService.getProductById(productId);
 
-        // Assuming the external service will handle updating view counts
         productService.updateProductView(productId, product.getNumberOfViews() + 1);
 
         // Check for existing view history or create a new one

@@ -3,6 +3,9 @@ package com.cybermall.backend.model;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents a user in the system.
+ */
 public class User {
 
     private Long id;
