@@ -55,7 +55,7 @@ public class RecommendationServiceController {
      * @param userId the ID of the user for whom to retrieve recommendations
      * @return a list of recommended products, or an error response if the user could not be found
      */
-    @GetMapping("/")
+    @PostMapping("/")
     public ResponseEntity<List<Long>> getRecommendations(@RequestParam Long userId) {
         User user = this.userService.getUserById(userId);
         if (user == null) {
@@ -64,6 +64,7 @@ public class RecommendationServiceController {
         }
         this.setStrategy(user);
         List<Long> recommendations = currentStrategy.recommend(user);
+        // System.out.println("Recommended products from backend: " + ResponseEntity.ok(recommendations));
         return ResponseEntity.ok(recommendations);
     }
 }

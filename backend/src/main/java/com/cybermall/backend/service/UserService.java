@@ -23,75 +23,11 @@ import org.json.JSONArray;
 public class UserService {
 
     private final RestTemplate restTemplate;
-    private final String loginUrl = "https://09f1-209-129-244-192.ngrok-free.app/api/user/login";
-    private final String getCurrentLoggedInUserUrl = "https://09f1-209-129-244-192.ngrok-free.app/api/user/get/login";
     private final String usersUrl = "https://09f1-209-129-244-192.ngrok-free.app/api/user/users";
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public UserService() {
         this.restTemplate = new RestTemplate();
-    }
-
-    public void loginUser(String username, String password) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        String url = loginUrl;
-        
-        // Properly format the JSON with quotes around string values
-        String jsonBody = String.format("{\"userAccount\": \"%s\", \"userPassword\": \"%s\"}", username, password);
-        HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
-    
-        try {
-            // Using exchange method to obtain response entity to check response details
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                // Optionally, handle response data if necessary
-                System.out.println("Login successful: " + response.getBody());
-            } else {
-                log.error("Failed to log in user, Status Code: {}", response.getStatusCode());
-                throw new RuntimeException("Login failed with status code: " + response.getStatusCode());
-            }
-        } catch (HttpClientErrorException e) {
-            log.error("Error logging in user: {}", e.getMessage());
-            throw new RuntimeException("Error logging in user: " + e.getMessage());
-        }
-    }
-
-    public User getCurrentLoggedInUser() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>("{}", headers);
-    
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                getCurrentLoggedInUserUrl,
-                HttpMethod.GET,
-                entity,
-                String.class
-            );
-    
-            if (response.getStatusCode().is2xxSuccessful()) {
-                JSONObject jsonResponse = new JSONObject(response.getBody());
-                System.out.println("Response Body: " + jsonResponse.toString());
-    
-                if (jsonResponse.optJSONObject("data") != null) {
-                    JSONObject jsonData = jsonResponse.getJSONObject("data");
-                    User user = new User();
-                    user.setUserId(jsonData.optLong("id"));
-                    user.setUserName(jsonData.optString("userName", "Default User"));
-                    return user;
-                } else {
-                    System.out.println("No user data available: " + jsonResponse.getString("message"));
-                    return null;
-                }
-            } else {
-                log.error("Failed to fetch logged-in user, Status Code: {}", response.getStatusCode());
-                throw new RuntimeException("Failed to fetch logged-in user.");
-            }
-        } catch (HttpClientErrorException e) {
-            log.error("Error fetching logged-in user: {}", e.getMessage());
-            throw new RuntimeException("Error fetching logged-in user: " + e.getMessage());
-        }
     }
 
     public List<User> getAllUsers() {
@@ -112,7 +48,7 @@ public class UserService {
                     JSONObject userObj = usersArray.getJSONObject(i);
                     User user = new User(
                         userObj.getLong("id"),
-                        userObj.optString("userName", null)
+                        userObj.optString("userAccount", null)
                     );
                     users.add(user);
                 }
