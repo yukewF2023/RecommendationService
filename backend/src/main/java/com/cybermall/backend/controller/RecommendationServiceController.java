@@ -44,8 +44,8 @@ public class RecommendationServiceController {
         int totalUniqueProductsViewedByCurrentUser = viewHistoryService.getViewHistoryByUser(user.getUserId()).size();
 
         // Adjust thresholds based on catalog size
-        int basicThreshold = Math.min(10, totalProducts / 10); // Ensure threshold doesn't exceed 10% of catalog
-        int advancedThreshold = Math.min(30, totalProducts / 8); // Ensure threshold doesn't exceed 25% of catalog
+        int basicThreshold = Math.min(10, totalProducts / 7); // Ensure threshold doesn't exceed 15% of catalog
+        int advancedThreshold = Math.min(30, totalProducts / 3); // Ensure threshold doesn't exceed 33% of catalog
 
         if (totalProducts <= 10 || totalUniqueProductsViewedByCurrentUser < basicThreshold) {
             currentStrategy = new SimpleRecommendationStrategy(this.productService);
