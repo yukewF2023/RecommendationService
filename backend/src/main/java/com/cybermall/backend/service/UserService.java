@@ -22,7 +22,7 @@ import org.json.JSONArray;
 public class UserService {
 
     private final RestTemplate restTemplate;
-    private final String usersUrl = "https://09f1-209-129-244-192.ngrok-free.app/api/user/users";
+    private final String usersUrl = "https://b756-73-63-240-26.ngrok-free.app/user/users";
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public UserService() {

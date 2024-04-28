@@ -27,7 +27,7 @@ import org.json.JSONArray;
 public class ProductService {
 
     private final RestTemplate restTemplate;
-    private final String productsUrl = "https://09f1-209-129-244-192.ngrok-free.app/api/products";
+    private final String productsUrl = "https://b756-73-63-240-26.ngrok-free.app/products";
     private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
     public ProductService() {
