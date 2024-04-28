@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 **/src/main/java/com/cybermall/backend/python/myenv
+!pom.xml
+!HELP.md
 
 ### STS ###
 .apt_generated
